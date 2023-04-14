@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<launch>
+
+	<!-- Set namespace -->
+	<!--arg name="id_robot" default="robot"/-->
+
+	<!-- Desired frequency -->
+	<arg name="desired_freq" default="1.0" />
+	
+	<!-- Load .yaml example -->
+	<rosparam file="$(find robotnik_telegram)/config/msg_config.yaml" command="load" />
+
+	<!--group ns="$(arg id_robot)"-->
+
+		<!-- start SMTPManager node -->
+		<node name="msg_manager" pkg="robotnik_telegram" type="msg_manager_node.py" output="screen" respawn="false">
+			<param name="desired_freq" value="$(arg desired_freq)"/>
+		</node>
+
+	<!--/group-->
+
+</launch>
