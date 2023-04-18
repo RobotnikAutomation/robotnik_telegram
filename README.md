@@ -38,6 +38,10 @@ catkin build
 source devel/setup.bash
 ```
 ## Bot creation
+To send messages via telegram it is necessary to create a bot, and so we will get our token. To do this, a link is left here where the steps to follow to create it are explained.
+
+* [Create a Bot](https://atareao.es/tutorial/crea-tu-propio-bot-para-telegram/)
+
 
 ## Package configuration
 This package needs the user ID and the Bot token to be able to send messages. So that, edit the following file:
