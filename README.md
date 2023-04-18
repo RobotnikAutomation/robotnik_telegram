@@ -46,10 +46,12 @@ This package needs the user ID and the Bot token to be able to send messages. So
 config/msg_config.yaml
 ```
 Fill the fields with your Bot configuration like in this example:
+```bash
 telegram:
   id:  "12345678"
   token: "678863201:BAFyeeSDj6fKWC2FJ1BStNAVCPADTXagqBA"
-  
+```
+
 ## Bringup
 
 Launch the package:
