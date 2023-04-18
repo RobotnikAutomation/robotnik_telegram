@@ -1,55 +1,60 @@
 # robotnik_telegram
 
-The robotnik_telegram package, based on RComponent structure. 
+The robotnik_telegram package, telegram server to send messages through ROS 
 
 ## Installation
 
-(Optional)
+This package dependes on the following packages:
 
 
-## 1 node_name
+* [robotnik_msgs](https://github.com/RobotnikAutomation/robotnik_msgs.git)
 
-does...
+```bash
+git clone https://github.com/RobotnikAutomation/robotnik_msgs
+```
 
-### 1.1 Parameters
+* [rcomponent](https://github.com/RobotnikAutomation/rcomponent.git)
 
-* ~parameter_name (type, default: value)
-   description
-   
-### 1.2 Subscribed Topics
+```bash
+git clone https://github.com/RobotnikAutomation/rcomponent
+```
 
-* foo/topic_name1 (std_msgs/String)
-  topic_desciption 1
+Install the package:
 
-### 1.3 Published Topics
+```bash
+git clone https://github.com/RobotnikAutomation/robotnik_telegram.git
+```
 
-* foo/topic_name (std_msgs/String)
-  topic description, including any important rate information
+Install other ros dependencies:
 
-### 1.4 Services
-* foo/service_name (nav_msgs/GetMap)
-  service description
+```bash
+rosdep install --from-path src --ignore-src -y -r
+```
 
-### 1.5 Services Called
-* foo/service_name (nav_msgs/GetMap)
-  service description
+Build the package:
 
-### 1.6 Action server
-* foo/service_name (move_base_msgs/MoveBaseAction)
-  Action service description
+```bash
+catkin build
+source devel/setup.bash
+```
+## Bot creation
 
-### 1.7 Action clients called
-* foo/service_name (move_base_msgs/MoveBaseAction)
-  Action service description
+## Package configuration
+This package needs the user ID and the bot token to be able to send messages. So that, edit the following file:
 
-### 1.8 Required tf Transforms
-* foo → bar
-  description of transform
+```bash
+config/msg_config.yaml
+```
 
-### 1.9 Provided tf Transforms
-* baz → mumble
-  description of transform
+## Bringup
 
-### 1.10 Bringup
+Launch the package:
+```bash
+roslaunch robotnik_telegram msg_manager.launch
+```
+Send a message:
+```bash
+rosservice call /telegram/send_msg "msg: 'string message'" 
+```
 
-(optional)
+
