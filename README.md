@@ -40,12 +40,16 @@ source devel/setup.bash
 ## Bot creation
 
 ## Package configuration
-This package needs the user ID and the bot token to be able to send messages. So that, edit the following file:
+This package needs the user ID and the Bot token to be able to send messages. So that, edit the following file:
 
 ```bash
 config/msg_config.yaml
 ```
-
+Fill the fields with your Bot configuration like in this example:
+telegram:
+  id:  "12345678"
+  token: "678863201:BAFyeeSDj6fKWC2FJ1BStNAVCPADTXagqBA"
+  
 ## Bringup
 
 Launch the package:
