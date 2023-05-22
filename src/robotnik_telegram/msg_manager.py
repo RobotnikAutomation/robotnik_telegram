@@ -111,7 +111,7 @@ class MSGManager(RComponent):
             }
      
             if requests.post(url, params=params):
-                response.resp = "Telegram sent to " +  telegram['id']
+                response.resp = "Telegram sent to user " +  telegram['id']
                 response.success = True
             else:
                 response.resp = "The telegram can not be sent"
