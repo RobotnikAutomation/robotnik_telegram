@@ -1,3 +1,6 @@
+string id
+string token
 string msg
 ---
+bool success
 string resp
