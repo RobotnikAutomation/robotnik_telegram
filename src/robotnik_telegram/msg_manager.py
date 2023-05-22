@@ -4,6 +4,7 @@
 import rospy
 import os
 import requests
+import re
 
 from rcomponent.rcomponent import *
 
@@ -25,8 +26,8 @@ class MSGManager(RComponent):
         RComponent.ros_read_params(self)
 
         #Parametros que hacen falta para mandar mensaje de telegram
-        self.telegram_id = rospy.get_param('telegram/id', 'user_id')
-        self.telegram_token = rospy.get_param('telegram/token', 'user_token')
+        self.default_id = rospy.get_param('telegram/default_recipients/id','1234567891')[0]
+        self.default_token = rospy.get_param('telegram/default_recipients/token','1234567891:AAHqLv9VZTA-8dYdGcxLPYVPWTs_eJeOyS4')[0]
 
     def ros_setup(self):
         """Creates and inits ROS components"""
@@ -34,13 +35,20 @@ class MSGManager(RComponent):
         RComponent.ros_setup(self)
 
         # Service
-        self.send_telegram_msg_service = rospy.Service('telegram/send_msg', SendTelegram, self.send_telegram_msg)
+        self.send_telegram_msg_service = rospy.Service('robotnik_telegram/send', SendTelegram, self.send_telegram_msg)
 
         return 0
 
     def init_state(self):
-        self.status = String()
-
+        
+        if self.check_id(self.default_id) == (False):
+            rospy.logerr("Default id is malformed")
+            rospy.signal_shutdown("shutdown")
+        
+        if self.check_token(self.default_token) == (False):
+            rospy.logerr("Default token is malformed")
+            rospy.signal_shutdown("shutdown")
+   
         return RComponent.init_state(self)
 
     def ready_state(self):
@@ -66,23 +74,79 @@ class MSGManager(RComponent):
 
         return RComponent.switch_to_state(self, new_state)
 
-    def send_telegram_msg(self, req):
+    
+    def check_id(self, id):
+
+        valid = True
+        regex = '[0-9]{10}'
+        
+        if not re.search(regex, id):
+            valid = False
+  
+        return valid
+
+    def check_token(self, token):
+
+        valid = True
+        regex = '[0-9]{10}:[a-zA-Z0-9_-]{35}'
+
+        if not re.search(regex, token):
+            valid = False
+
+        return valid
+
+    def send_telegram_msg(self, req):    
         
         response = SendTelegramResponse()
-   
-        id = self.telegram_id
-        token = self.telegram_token
-        
-        url = "https://api.telegram.org/bot" + token + "/sendMessage"
-        params = {
-        'chat_id': id,
-        'text' : req.msg
-        }
-        
-        requests.post(url, params=params)
+        response.success = False
 
-        response.resp = "Sent message"
+        telegram = self.build_telegram(req)
+
+        if telegram != {}:
+
+            url = "https://api.telegram.org/bot" + telegram['token'] + "/sendMessage"
+            params = {
+            'chat_id': telegram['id'],
+            'text' : req.msg
+            }
+     
+            if requests.post(url, params=params):
+                response.resp = "Telegram sent to " +  telegram['id']
+                response.success = True
+            else:
+                response.resp = "The telegram can not be sent"
+    
+        if response.success:
+            rospy.loginfo(response.resp)
+        else:
+            rospy.logerr(response.resp)
+
         return response
 
-
             
+    def build_telegram(self, telegram_data):
+
+        telegram = {"id": " ", "token": " "}
+
+        if len(telegram_data.id) == 0:
+            telegram['id'] = self.default_id[0]
+
+        else:
+            if self.check_id(telegram_data.id):
+                telegram['id'] = telegram_data.id
+            else:
+                telegram = {}
+
+
+        if len(telegram_data.token) == 0:
+            telegram['token'] = self.default_token[0]
+            
+        else:
+            if self.check_token(telegram_data.token):
+                telegram['token'] = telegram_data.token
+            else:
+                telegram = {}
+
+        return telegram
+
+

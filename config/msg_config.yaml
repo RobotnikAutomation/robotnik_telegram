@@ -1,3 +1,6 @@
 telegram:
-  id:  "12345678"
-  token: "678863201:BAFyeeSDj6fKWC2FJ1BStNAVCPADTXagqBA"
+  default_recipients:
+    id: 
+      - "1234567891"
+    token: 
+      - "1234567891:ABGqLv9SRTE-9dYdGcxLPYVPWTs_eJeOyS4"
