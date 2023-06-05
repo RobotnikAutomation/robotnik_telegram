@@ -44,10 +44,6 @@ class MSGManager(RComponent):
         if self.check_id(self.default_id) == (False):
             rospy.logerr("Default id is malformed")
             rospy.signal_shutdown("shutdown")
-        
-        if self.check_token(self.default_token) == (False):
-            rospy.logerr("Default token is malformed")
-            rospy.signal_shutdown("shutdown")
    
         return RComponent.init_state(self)
 
@@ -85,16 +81,6 @@ class MSGManager(RComponent):
   
         return valid
 
-    def check_token(self, token):
-
-        valid = True
-        regex = '[0-9]{10}:[a-zA-Z0-9_-]{35}'
-
-        if not re.search(regex, token):
-            valid = False
-
-        return valid
-
     def send_telegram_msg(self, req):    
         
         response = SendTelegramResponse()
@@ -104,7 +90,7 @@ class MSGManager(RComponent):
 
         if telegram != {}:
 
-            url = "https://api.telegram.org/bot" + telegram['token'] + "/sendMessage"
+            url = "https://api.telegram.org/bot" + self.default_token + "/sendMessage"
             params = {
             'chat_id': telegram['id'],
             'text' : req.msg
@@ -126,7 +112,7 @@ class MSGManager(RComponent):
             
     def build_telegram(self, telegram_data):
 
-        telegram = {"id": " ", "token": " "}
+        telegram = {"id": " "}
 
         if len(telegram_data.id) == 0:
             telegram['id'] = self.default_id[0]
@@ -134,16 +120,6 @@ class MSGManager(RComponent):
         else:
             if self.check_id(telegram_data.id):
                 telegram['id'] = telegram_data.id
-            else:
-                telegram = {}
-
-
-        if len(telegram_data.token) == 0:
-            telegram['token'] = self.default_token[0]
-            
-        else:
-            if self.check_token(telegram_data.token):
-                telegram['token'] = telegram_data.token
             else:
                 telegram = {}
 
