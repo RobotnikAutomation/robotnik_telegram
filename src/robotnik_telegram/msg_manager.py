@@ -90,29 +90,31 @@ class MSGManager(RComponent):
 
         if telegram != {}:
 
-            url = "https://api.telegram.org/bot" + self.default_token + "/sendMessage"
+            url = "https://api.telegram.org/bot" + telegram['token'] + "/sendMessage"
             params = {
             'chat_id': telegram['id'],
-            'text' : req.msg
+            'text' : req.message
             }
      
             if requests.post(url, params=params):
-                response.resp = "Telegram sent to user " +  telegram['id']
+                response.msg = "Telegram sent to user " +  telegram['id']
                 response.success = True
             else:
-                response.resp = "The telegram can not be sent"
+                response.msg = "The telegram can not be sent"
     
         if response.success:
-            rospy.loginfo(response.resp)
+            rospy.loginfo(response.msg)
         else:
-            rospy.logerr(response.resp)
+            rospy.logerr(response.msg)
 
         return response
 
-            
+
     def build_telegram(self, telegram_data):
 
-        telegram = {"id": " "}
+        telegram = {"id": " ", "token": " "}
+
+        telegram['token'] = self.default_token
 
         if len(telegram_data.id) == 0:
             telegram['id'] = self.default_id[0]
