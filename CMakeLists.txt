@@ -14,7 +14,7 @@ find_package(catkin REQUIRED COMPONENTS
 
 add_service_files(
   FILES
-  SendTelegram.srv
+  SendAlarms.srv
 )
 
 catkin_python_setup()

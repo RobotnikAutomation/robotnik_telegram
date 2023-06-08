@@ -11,7 +11,7 @@ from rcomponent.rcomponent import *
 # Insert here msg and srv imports:
 from std_msgs.msg import String
 from robotnik_msgs.msg import StringStamped
-from robotnik_telegram.srv import SendTelegram, SendTelegramResponse
+from robotnik_telegram.srv import SendAlarms, SendAlarmsResponse
 
 
 class MSGManager(RComponent):
@@ -26,8 +26,8 @@ class MSGManager(RComponent):
         RComponent.ros_read_params(self)
 
         #Parametros que hacen falta para mandar mensaje de telegram
-        self.default_id = rospy.get_param('telegram/default_recipients/id','1234567891')[0]
-        self.default_token = rospy.get_param('telegram/default_recipients/token','1234567891:AAHqLv9VZTA-8dYdGcxLPYVPWTs_eJeOyS4')[0]
+        self.default_recipients= rospy.get_param('telegram/default_recipients','1234567891')
+        self.default_token = rospy.get_param('telegram/token','1234567891:AAHqLv9VZTA-8dYdGcxLPYVPWTs_eJeOyS4')
 
     def ros_setup(self):
         """Creates and inits ROS components"""
@@ -35,13 +35,13 @@ class MSGManager(RComponent):
         RComponent.ros_setup(self)
 
         # Service
-        self.send_telegram_msg_service = rospy.Service('robotnik_telegram/send', SendTelegram, self.send_telegram_msg)
+        self.send_telegram_msg_service = rospy.Service('robotnik_telegram/send', SendAlarms, self.send_telegram_msg)
 
         return 0
 
     def init_state(self):
         
-        if self.check_id(self.default_id) == (False):
+        if self.check_recipients(self.default_recipients) == (False):
             rospy.logerr("Default id is malformed")
             rospy.signal_shutdown("shutdown")
    
@@ -71,36 +71,41 @@ class MSGManager(RComponent):
         return RComponent.switch_to_state(self, new_state)
 
     
-    def check_id(self, id):
+    def check_recipients(self, recipients):
 
         valid = True
         regex = '[0-9]{10}'
         
-        if not re.search(regex, id):
-            valid = False
+        for recipient in recipients:
+
+            if not re.search(regex, recipient):
+                rospy.logerr("%s is an invalid recipient", recipient)
+                valid = False
   
         return valid
 
     def send_telegram_msg(self, req):    
         
-        response = SendTelegramResponse()
+        response = SendAlarmsResponse()
         response.success = False
 
         telegram = self.build_telegram(req)
 
         if telegram != {}:
 
-            url = "https://api.telegram.org/bot" + telegram['token'] + "/sendMessage"
-            params = {
-            'chat_id': telegram['id'],
-            'text' : req.message
-            }
-     
-            if requests.post(url, params=params):
-                response.msg = "Telegram sent to user " +  telegram['id']
-                response.success = True
-            else:
-                response.msg = "The telegram can not be sent"
+            for recipient in telegram['To']:
+
+                url = "https://api.telegram.org/bot" + self.default_token + "/sendMessage"
+                params = {
+                'chat_id': recipient,
+                'text' : req.subject + '\n' + req.message
+                }
+        
+                if requests.post(url, params=params):
+                    response.msg = "Telegram sent to user " +  recipient
+                    response.success = True
+                else:
+                    response.msg = "The telegram can not be sent"
     
         if response.success:
             rospy.loginfo(response.msg)
@@ -112,19 +117,19 @@ class MSGManager(RComponent):
 
     def build_telegram(self, telegram_data):
 
-        telegram = {"id": " ", "token": " "}
+        telegram = {"To": " ", "Subject": " "}
 
-        telegram['token'] = self.default_token
+        telegram['Subject'] = telegram_data.subject
 
-        if len(telegram_data.id) == 0:
-            telegram['id'] = self.default_id[0]
-
+        if len(telegram_data.recipients) == 0:
+            telegram['To'] = self.default_recipients
+  
         else:
-            if self.check_id(telegram_data.id):
-                telegram['id'] = telegram_data.id
+            if self.check_recipients(telegram_data.recipients):
+                telegram['To'] = telegram_data.recipients
             else:
                 telegram = {}
-
+        
         return telegram
 
 

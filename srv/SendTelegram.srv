@@ -1,6 +1,0 @@
-string id
-string token
-string message
----
-bool success
-string msg
