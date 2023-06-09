@@ -1,5 +1,5 @@
 telegram:
+  token: "6229310126:AAHqLv9VZTA-8dYdGcxLPYVPWTs_eJeOyS4"
   default_recipients: 
       - "1234567891"
-    token: 
-      - "6229310126:AAHqLv9VZTA-8dYdGcxLPYVPWTs_eJeOyS4"
+ 
