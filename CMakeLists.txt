@@ -9,13 +9,13 @@ find_package(catkin REQUIRED COMPONENTS
   std_srvs
   rcomponent
   robotnik_msgs
-  message_generation
+  #message_generation
 )
 
-add_service_files(
-  FILES
-  SendAlarms.srv
-)
+#add_service_files(
+#  FILES
+#  SendAlarms.srv
+#)
 
 catkin_python_setup()
 
@@ -33,7 +33,7 @@ catkin_package(
     std_msgs
     std_srvs
     rcomponent
-    message_runtime
+   # message_runtime
   DEPENDS
 )
 

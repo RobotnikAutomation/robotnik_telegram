@@ -11,7 +11,7 @@ from rcomponent.rcomponent import *
 # Insert here msg and srv imports:
 from std_msgs.msg import String
 from robotnik_msgs.msg import StringStamped
-from robotnik_telegram.srv import SendAlarms, SendAlarmsResponse
+from robotnik_alarms_msgs.srv import SendAlarms, SendAlarmsResponse
 
 
 class MSGManager(RComponent):
