@@ -33,9 +33,10 @@ class MSGManager(RComponent):
         """Creates and inits ROS components"""
 
         RComponent.ros_setup(self)
+    
 
         # Service
-        self.send_telegram_msg_service = rospy.Service('robotnik_telegram/send', SendAlarms, self.send_telegram_msg)
+        self.send_telegram_msg_service = rospy.Service('robotnik_telegram/send_telegram', SendAlarms, self.send_telegram_msg)
 
         return 0
 
@@ -87,7 +88,8 @@ class MSGManager(RComponent):
     def send_telegram_msg(self, req):    
         
         response = SendAlarmsResponse()
-        response.success = False
+        response.ret.success = False
+        response.ret.code = -1
 
         telegram = self.build_telegram(req)
 
@@ -98,28 +100,28 @@ class MSGManager(RComponent):
                 url = "https://api.telegram.org/bot" + self.default_token + "/sendMessage"
                 params = {
                 'chat_id': recipient,
-                'text' : req.subject + '\n' + req.message
+                'text' :  req.status.message
                 }
         
                 if requests.post(url, params=params):
-                    response.msg = "Telegram sent to user " +  recipient
-                    response.success = True
+                    response.ret.message = "Telegram sent to user " +  recipient
+                    response.ret.success = True
+                    response.ret.code = 0
                 else:
-                    response.msg = "The telegram can not be sent"
+                    response.ret.message = "The telegram can not be sent"
+
     
-        if response.success:
-            rospy.loginfo(response.msg)
-        else:
-            rospy.logerr(response.msg)
+        if (response.ret.success == True) or (response.ret.code == 0):
+            rospy.loginfo(response.ret.message)
+        elif (response.ret.success == False) or (response.ret.code == -1):
+            rospy.logerr(response.ret.message)
 
         return response
 
 
     def build_telegram(self, telegram_data):
 
-        telegram = {"To": " ", "Subject": " "}
-
-        telegram['Subject'] = telegram_data.subject
+        telegram = {"To": " "}
 
         if len(telegram_data.recipients) == 0:
             telegram['To'] = self.default_recipients
