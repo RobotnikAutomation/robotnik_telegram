@@ -46,7 +46,7 @@ On the other hand, you also need to get the user id. To do this, follow the step
   
 * [User IDs](https://www.technobezz.com/how-to-find-user-ids-in-telegram/)
 
-In this way, the necessary parameters are obtained to send messages by telegram. The last step would be to open the Talagram application and start a conversation with the created bot and write /start.
+In this way, the necessary parameters are obtained to send messages by telegram. The last step would be to open the Talagram application and start a conversation with the created bot and write /start. The messages will then arrive in this chat.
 
 ## Package configuration
 This package needs the user ID and the Bot token to be able to send messages. So that, edit the following file:
