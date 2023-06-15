@@ -104,16 +104,16 @@ class MSGManager(RComponent):
                 }
         
                 if requests.post(url, params=params):
-                    response.ret.message = "Telegram sent to user " +  recipient
+                    #response.ret.message = "Telegram sent to user " +  recipient
                     response.ret.success = True
                     response.ret.code = 0
                 else:
                     response.ret.message = "The telegram can not be sent"
 
     
-        if (response.ret.success == True) or (response.ret.code == 0):
-            rospy.loginfo(response.ret.message)
-        elif (response.ret.success == False) or (response.ret.code == -1):
+        #if (response.ret.success == True) or (response.ret.code == 0):
+        #    rospy.loginfo(response.ret.message)
+        if (response.ret.success == False) or (response.ret.code == -1):
             rospy.logerr(response.ret.message)
 
         return response
