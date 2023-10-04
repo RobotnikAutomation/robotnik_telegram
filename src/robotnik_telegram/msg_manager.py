@@ -20,6 +20,8 @@ class MSGManager(RComponent):
     def __init__(self):
 
         RComponent.__init__(self)
+        
+        self.logger = self.initialize_logger()
 
     def ros_read_params(self):
 
@@ -43,7 +45,7 @@ class MSGManager(RComponent):
     def init_state(self):
         
         if self.check_recipients(self.default_recipients) == (False):
-            rospy.logerr("Default id is malformed")
+            self.logger.logerror("Default id is malformed", "")
             rospy.signal_shutdown("shutdown")
    
         return RComponent.init_state(self)
@@ -80,7 +82,7 @@ class MSGManager(RComponent):
         for recipient in recipients:
 
             if not re.search(regex, recipient):
-                rospy.logerr("%s is an invalid recipient", recipient)
+                self.logger.logerror(f"{recipient} is an invalid recipient", "")
                 valid = False
   
         return valid
@@ -114,7 +116,7 @@ class MSGManager(RComponent):
         #if (response.ret.success == True) or (response.ret.code == 0):
         #    rospy.loginfo(response.ret.message)
         if (response.ret.success == False) or (response.ret.code == -1):
-            rospy.logerr(response.ret.message)
+            self.logger.logerror(response.ret.message, "")
 
         return response
 
