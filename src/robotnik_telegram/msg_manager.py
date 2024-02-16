@@ -17,12 +17,13 @@ class MSGManager(RComponent):
 
     def __init__(self):
 
-        RComponent.__init__(self)
-
-        self.logger = self.initialize_logger()
         self.default_recipients = '1234567891'
         self.default_token = '1234567891:AAHqLv9VZTA-8dYdGcxLPYVPWTs_eJeOyS4'
         self.send_telegram_msg_service = None
+
+        RComponent.__init__(self)
+
+        self.logger = self.initialize_logger()
 
     def ros_read_params(self) -> None:
         """Reads the parameters received and sets the corresponding attributes"""
