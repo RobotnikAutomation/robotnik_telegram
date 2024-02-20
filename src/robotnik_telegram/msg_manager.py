@@ -143,7 +143,7 @@ class MSGManager(RComponent):
             data = {'chat_id': recipient}
             with open(file_to_upload, 'rb') as f:
                 document = f.read()
-            if file_extension == 'mkv':
+            if file_extension in ['mkv', 'mp4']:
                 # Maximum file size for videos is 50 MB
                 if len(document) / 1e6 > 49.9:
                     rospy.logwarn(f'File {file_to_upload} exceeds the maximum size ' \
@@ -153,7 +153,7 @@ class MSGManager(RComponent):
 
                 url = "https://api.telegram.org/bot" + self.default_token + "/sendVideo"
                 files = {'video': document}
-            elif file_extension == 'png':
+            elif file_extension in ['png', 'jpg']:
                 # Maximum file size for photos is 10 MB
                 if len(document) / 1e6 > 9.9:
                     rospy.logwarn(f'File {file_to_upload} exceeds the maximum size ' \
