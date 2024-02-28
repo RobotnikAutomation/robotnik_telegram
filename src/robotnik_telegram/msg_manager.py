@@ -143,7 +143,7 @@ class MSGManager(RComponent):
             data = {'chat_id': recipient}
             with open(file_to_upload, 'rb') as f:
                 document = f.read()
-            if file_extension in ['mkv', 'mp4']:
+            if file_extension in ['mkv', 'mp4', 'avi']:
                 # Maximum file size for videos is 50 MB
                 if len(document) / 1e6 > 49.9:
                     rospy.logwarn(f'File {file_to_upload} exceeds the maximum size ' \
