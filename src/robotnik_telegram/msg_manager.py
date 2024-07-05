@@ -84,7 +84,7 @@ class MSGManager(RComponent):
         """Checks whether the recipients received are valid or not"""
 
         valid = True
-        regex = '[0-9]{10}'
+        regex = '^\d{10}$|^-\d{13}$'
 
         for recipient in recipients:
 
