@@ -153,7 +153,7 @@ class MSGManager(RComponent):
 
                 url = "https://api.telegram.org/bot" + self.default_token + "/sendVideo"
                 files = {'video': document}
-            elif file_extension in ['png', 'jpg']:
+            elif file_extension in ['png', 'jpg' ,'jpeg']:
                 # Maximum file size for photos is 10 MB
                 if len(document) / 1e6 > 9.9:
                     rospy.logwarn(f'File {file_to_upload} exceeds the maximum size ' \
